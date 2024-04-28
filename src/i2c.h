@@ -13,6 +13,12 @@
 #define CTRL_REG1_ADDR 0x20
 #define CTRL_REG2_ADDR 0x21
 
+// Define the full-scale configuration values
+#define FULL_SCALE_4GAUSS 0
+#define FULL_SCALE_8GAUSS 1
+#define FULL_SCALE_12GAUSS 2
+#define FULL_SCALE_16GAUSS 3
+
 // Interrupt register Address
 #define INT_CFG_ADDR 0x30
 

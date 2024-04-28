@@ -88,9 +88,37 @@ FS[1:0] = 11; //+-16 gauss
 */
 status_t get_fullScale_config(){
 
-   // i2c_read(bus_address,register_address,length,&buffer);
+   uint8_t buffer;
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG2_ADDR,1,&buffer) != 0)
+   {
+        printf("Failed to read the data\n");
+        return STATUS_ERROR;
+   }else{
+        // Shift right by 5 bits and mask with 0x03
+        // assume the values is 10111011 so shift 5 bit is 00000101
+        // when it is & with 100 will left with FS[1:0]
+        uint8_t fullScaleConfig = (buffer >> 5) & 0x03; 
 
-   // i2c_write(bus_address,register_address,length,&buffer);
+        switch (fullScaleConfig) {
+            case FULL_SCALE_4GAUSS:
+                printf("Full-scale range: ±4 gauss\n");
+                break;
+            case FULL_SCALE_8GAUSS:
+                printf("Full-scale range: ±8 gauss\n");
+                break;
+            case FULL_SCALE_12GAUSS:
+                printf("Full-scale range: ±12 gauss\n");
+                break;
+            case FULL_SCALE_16GAUSS:
+                printf("Full-scale range: ±16 gauss\n");
+                break;
+            default:
+                printf("Invalid full-scale range\n");
+                break;
+        }
+
+   }
+   return STATUS_OK;
 
 }
 
