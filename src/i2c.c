@@ -213,11 +213,37 @@ DO[2:0] = 110; //40Hz
 DO[2:0] = 111; //80Hz
 
 */
-status_t set_outputDataRate_config(uint8_t output_dataRate){
+status_t set_outputDataRate_config(uint8_t output_dataRate_Set){
 
-   // i2c_read(bus_address,register_address,length,&buffer);
+   uint8_t outputDataRate;
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
+   {
+        printf("Failed to read the data\n");
+        return STATUS_ERROR;
+   }else{
+        if(output_dataRate_Set<=0x07){
+            // Take a mask 0x007 (00000111) Shift right by 2 (00011100) and flip it (11100011)
+            // Now & it with the original will get rid of DO[0:2] from the register
+            outputDataRate &= ~(0x07 << 2); 
 
-   // i2c_write(bus_address,register_address,length,&buffer);
+            // give two bit shift to the output_dataRate_Set and combine it with final data
+            outputDataRate |= (output_dataRate_Set << 2);
+            if(i2c_write(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
+            {
+                printf("Failed to write the data\n");
+                return STATUS_ERROR;
+            }else{
+                printf("Successfully write the data\n"); 
+            }
+
+        }else{
+            printf("Invalid Value of output Data Rate\n");
+            return STATUS_ERROR;
+        }
+
+   }
+
+   return STATUS_OK;
 
 }
 

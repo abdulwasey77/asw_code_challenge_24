@@ -71,7 +71,7 @@ status_t get_fullScale_config();
 
 status_t get_outputDataRate_config();
 
-status_t set_outputDataRate_config(uint8_t output_dataRate);
+status_t set_outputDataRate_config(uint8_t output_dataRate_Set);
 
 status_t interrupt_setting(bool value);
 
