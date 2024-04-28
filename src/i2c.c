@@ -89,35 +89,34 @@ FS[1:0] = 11; //+-16 gauss
 status_t get_fullScale_config(){
 
    uint8_t fullScaleConfig;
-   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG2_ADDR,1,&fullScaleConfig) != 0)
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG2_ADDR,1,&fullScaleConfig) != STATUS_OK)
    {
         printf("Failed to read the data\n");
         return STATUS_ERROR;
-   }else{
-        // Shift right by 5 bits and mask with 0x03
-        // assume the values is 10111011 so shift 5 bit is 00000101
-        // when it is & with 100 will left with FS[1:0]
-        fullScaleConfig = (fullScaleConfig >> 5) & 0x03; 
-
-        switch (fullScaleConfig) {
-            case FULL_SCALE_4GAUSS:
-                printf("Full-scale range: ±4 gauss\n");
-                break;
-            case FULL_SCALE_8GAUSS:
-                printf("Full-scale range: ±8 gauss\n");
-                break;
-            case FULL_SCALE_12GAUSS:
-                printf("Full-scale range: ±12 gauss\n");
-                break;
-            case FULL_SCALE_16GAUSS:
-                printf("Full-scale range: ±16 gauss\n");
-                break;
-            default:
-                printf("Invalid full-scale range\n");
-                break;
-        }
-
    }
+    // Shift right by 5 bits and mask with 0x03
+    // assume the values is 10111011 so shift 5 bit is 00000101
+    // when it is & with 100 will left with FS[1:0]
+    fullScaleConfig = (fullScaleConfig >> 5) & 0x03; 
+
+    switch (fullScaleConfig) {
+        case FULL_SCALE_4GAUSS:
+            printf("Full-scale range: ±4 gauss\n");
+            break;
+        case FULL_SCALE_8GAUSS:
+            printf("Full-scale range: ±8 gauss\n");
+            break;
+        case FULL_SCALE_12GAUSS:
+            printf("Full-scale range: ±12 gauss\n");
+            break;
+        case FULL_SCALE_16GAUSS:
+            printf("Full-scale range: ±16 gauss\n");
+            break;
+        default:
+            printf("Invalid full-scale range\n");
+            break;
+    }
+
    return STATUS_OK;
 
 }
@@ -148,44 +147,44 @@ DO[2:0] = 111; //80Hz
 status_t get_outputDataRate_config(){
 
 uint8_t outputDataRate;
-   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != STATUS_OK)
    {
         printf("Failed to read the data\n");
         return STATUS_ERROR;
-   }else{
-        // Shift right by 2 bits and mask with 0xE0
-        // assume the values is 10111011 so shift 2 bit is 00101110
-        // when it is & with 00111000 (0x38) will left with DO[2:0]
-        outputDataRate = (outputDataRate >> 2) & 0x38; 
-
-        switch (outputDataRate) {
-            case DATA_RATE_625mHz:
-                printf("Output Data Rate Configuration: 0.625Hz\n");
-                break;
-            case DATA_RATE_1250mHz:
-                printf("Output Data Rate Configuration: 1.25Hz\n");
-                break;
-            case DATA_RATE_2500mHz:
-                printf("Output Data Rate Configuration: 2.50Hz\n");
-                break;
-            case DATA_RATE_5Hz:
-                printf("Output Data Rate Configuration: 5Hz\n");
-                break;
-            case DATA_RATE_10Hz:
-                printf("Output Data Rate Configuration: 10Hz\n");
-                break;
-            case DATA_RATE_20Hz:
-                printf("Output Data Rate Configuration: 20Hz\n");
-                break;
-            case DATA_RATE_40Hz:
-                printf("Output Data Rate Configuration: 40Hz\n");
-                break;
-            default:
-                printf("Invalid Data Rate Configuration\n");
-                break;
-        }
-
    }
+    // Shift right by 2 bits and mask with 0xE0
+    // assume the values is 10111011 so shift 2 bit is 00101110
+    // when it is & with 00111000 (0x38) will left with DO[2:0]
+    outputDataRate = (outputDataRate >> 2) & 0x38; 
+
+    switch (outputDataRate) {
+        case DATA_RATE_625mHz:
+            printf("Output Data Rate Configuration: 0.625Hz\n");
+            break;
+        case DATA_RATE_1250mHz:
+            printf("Output Data Rate Configuration: 1.25Hz\n");
+            break;
+        case DATA_RATE_2500mHz:
+            printf("Output Data Rate Configuration: 2.50Hz\n");
+            break;
+        case DATA_RATE_5Hz:
+            printf("Output Data Rate Configuration: 5Hz\n");
+            break;
+        case DATA_RATE_10Hz:
+            printf("Output Data Rate Configuration: 10Hz\n");
+            break;
+        case DATA_RATE_20Hz:
+            printf("Output Data Rate Configuration: 20Hz\n");
+            break;
+        case DATA_RATE_40Hz:
+            printf("Output Data Rate Configuration: 40Hz\n");
+            break;
+        default:
+            printf("Invalid Data Rate Configuration\n");
+            break;
+    }
+
+   
    return STATUS_OK;
 
 }
@@ -216,32 +215,31 @@ DO[2:0] = 111; //80Hz
 status_t set_outputDataRate_config(uint8_t output_dataRate_Set){
 
    uint8_t outputDataRate;
-   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != STATUS_OK)
    {
         printf("Failed to read the data\n");
         return STATUS_ERROR;
-   }else{
-        if(output_dataRate_Set<=0x07){
-            // Take a mask 0x007 (00000111) Shift right by 2 (00011100) and flip it (11100011)
-            // Now & it with the original will get rid of DO[0:2] from the register
-            outputDataRate &= ~(0x07 << 2); 
+   }
+    if(output_dataRate_Set<=0x07){
+        // Take a mask 0x007 (00000111) Shift right by 2 (00011100) and flip it (11100011)
+        // Now & it with the original will get rid of DO[0:2] from the register
+        outputDataRate &= ~(0x07 << 2); 
 
-            // give two bit shift to the output_dataRate_Set and combine it with final data
-            outputDataRate |= (output_dataRate_Set << 2);
-            if(i2c_write(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
-            {
-                printf("Failed to write the data\n");
-                return STATUS_ERROR;
-            }else{
-                printf("Successfully write the data\n"); 
-            }
-
-        }else{
-            printf("Invalid Value of output Data Rate\n");
+        // give two bit shift to the output_dataRate_Set and combine it with final data
+        outputDataRate |= (output_dataRate_Set << 2);
+        if(i2c_write(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != STATUS_OK)
+        {
+            printf("Failed to write the data\n");
             return STATUS_ERROR;
+        }else{
+            printf("Successfully write the data\n"); 
         }
 
-   }
+    }else{
+        printf("Invalid Value of output Data Rate\n");
+        return STATUS_ERROR;
+    }
+
 
    return STATUS_OK;
 
@@ -265,10 +263,28 @@ INE = 1; //enable
 */
 status_t interrupt_setting(bool value){
 
-   // i2c_read(bus_address,register_address,length,&buffer);
+    uint8_t intConfig;
+    // Read the current value of the interrupt configuration register
+    if(i2c_read(I2C_BUS_ADDR1, INT_CFG_ADDR, 1, &intConfig) != STATUS_OK) {
+        printf("Failed to read the interrupt config\n");
+        return STATUS_ERROR;
+    }
 
-   // i2c_write(bus_address,register_address,length,&buffer);
+    if(value) {
+        // If value is true, set the INE bit (bit 0) to 1
+        intConfig |= 0x01; // Set bit 0
+    } else {
+        // If enable is false, clear the INE bit (bit 0) to 0
+        intConfig &= ~0x01; // Clear bit 0
+    }
 
+    // Write the modified value back to the interrupt configuration register
+    if(i2c_write(I2C_BUS_ADDR1, INT_CFG_ADDR, 1, &intConfig) != STATUS_OK) {
+        printf("Failed to write the interrupt config\n");
+        return STATUS_ERROR;
+    }
+
+    return STATUS_OK;
 }
 
 
