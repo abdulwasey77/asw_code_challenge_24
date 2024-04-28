@@ -19,6 +19,16 @@
 #define FULL_SCALE_12GAUSS 2
 #define FULL_SCALE_16GAUSS 3
 
+// Define the Output data rate configuration
+#define DATA_RATE_625mHz 0
+#define DATA_RATE_1250mHz 1
+#define DATA_RATE_2500mHz 2
+#define DATA_RATE_5Hz 3
+#define DATA_RATE_10Hz 4
+#define DATA_RATE_20Hz 5
+#define DATA_RATE_40Hz 6
+#define DATA_RATE_80Hz 7
+
 // Interrupt register Address
 #define INT_CFG_ADDR 0x30
 

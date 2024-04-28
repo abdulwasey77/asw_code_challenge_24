@@ -88,8 +88,8 @@ FS[1:0] = 11; //+-16 gauss
 */
 status_t get_fullScale_config(){
 
-   uint8_t buffer;
-   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG2_ADDR,1,&buffer) != 0)
+   uint8_t fullScaleConfig;
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG2_ADDR,1,&fullScaleConfig) != 0)
    {
         printf("Failed to read the data\n");
         return STATUS_ERROR;
@@ -97,7 +97,7 @@ status_t get_fullScale_config(){
         // Shift right by 5 bits and mask with 0x03
         // assume the values is 10111011 so shift 5 bit is 00000101
         // when it is & with 100 will left with FS[1:0]
-        uint8_t fullScaleConfig = (buffer >> 5) & 0x03; 
+        fullScaleConfig = (fullScaleConfig >> 5) & 0x03; 
 
         switch (fullScaleConfig) {
             case FULL_SCALE_4GAUSS:
@@ -147,9 +147,46 @@ DO[2:0] = 111; //80Hz
 */
 status_t get_outputDataRate_config(){
 
-   // i2c_read(bus_address,register_address,length,&buffer);
+uint8_t outputDataRate;
+   if(i2c_read(I2C_BUS_ADDR1,CTRL_REG1_ADDR,1,&outputDataRate) != 0)
+   {
+        printf("Failed to read the data\n");
+        return STATUS_ERROR;
+   }else{
+        // Shift right by 2 bits and mask with 0xE0
+        // assume the values is 10111011 so shift 2 bit is 00101110
+        // when it is & with 00111000 (0x38) will left with DO[2:0]
+        outputDataRate = (outputDataRate >> 2) & 0x38; 
 
-   // i2c_write(bus_address,register_address,length,&buffer);
+        switch (outputDataRate) {
+            case DATA_RATE_625mHz:
+                printf("Output Data Rate Configuration: 0.625Hz\n");
+                break;
+            case DATA_RATE_1250mHz:
+                printf("Output Data Rate Configuration: 1.25Hz\n");
+                break;
+            case DATA_RATE_2500mHz:
+                printf("Output Data Rate Configuration: 2.50Hz\n");
+                break;
+            case DATA_RATE_5Hz:
+                printf("Output Data Rate Configuration: 5Hz\n");
+                break;
+            case DATA_RATE_10Hz:
+                printf("Output Data Rate Configuration: 10Hz\n");
+                break;
+            case DATA_RATE_20Hz:
+                printf("Output Data Rate Configuration: 20Hz\n");
+                break;
+            case DATA_RATE_40Hz:
+                printf("Output Data Rate Configuration: 40Hz\n");
+                break;
+            default:
+                printf("Invalid Data Rate Configuration\n");
+                break;
+        }
+
+   }
+   return STATUS_OK;
 
 }
 
