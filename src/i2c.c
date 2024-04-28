@@ -302,10 +302,54 @@ x-axis => reg OUT_X_L (28h), OUT_X_H (29h)
 y-axis => OUT_Y_L (2Ah), OUT_Y_H (2Bh)
 z-axis => OUT_Z_L (2Ch), OUT_Z_H (2Dh)
 */
-status_t read_outputData_axis(axis_t){
+status_t read_outputData_axis(axis_t axis){
+   uint8_t low_byte, high_byte;
+   uint16_t axis_data;
 
-   // i2c_read(bus_address,register_address,length,&buffer);
+   switch (axis)
+   {
+   case xaxis:
+    if(i2c_read(I2C_BUS_ADDR1, OUT_X_L_ADDR, 1, &low_byte) != STATUS_OK) {
+        printf("Failed to read the interrupt config\n");
+        return STATUS_ERROR;
+    }
+    if(i2c_read(I2C_BUS_ADDR1, OUT_X_H_ADDR, 1, &high_byte) != STATUS_OK) {
+        printf("Failed to read the interrupt config\n");
+        return STATUS_ERROR;
+    }
+    break;
 
-   // i2c_write(bus_address,register_address,length,&buffer);
+    case yaxis:
+    if (i2c_read(I2C_BUS_ADDR1, OUT_Y_L_ADDR, 1, &low_byte) != STATUS_OK) {
+        printf("Failed to read the low byte of y-axis\n");
+        return STATUS_ERROR;
+    }
+    if (i2c_read(I2C_BUS_ADDR1, OUT_Y_H_ADDR, 1, &high_byte) != STATUS_OK) {
+        printf("Failed to read the high byte of y-axis\n");
+        return STATUS_ERROR;
+    }
+    break;
+
+    case zaxis:
+    if (i2c_read(I2C_BUS_ADDR1, OUT_Z_L_ADDR, 1, &low_byte) != STATUS_OK) {
+        printf("Failed to read the low byte of z-axis\n");
+        return STATUS_ERROR;
+    }
+    if (i2c_read(I2C_BUS_ADDR1, OUT_Z_H_ADDR, 1, &high_byte) != STATUS_OK) {
+        printf("Failed to read the high byte of z-axis\n");
+        return STATUS_ERROR;
+    }
+    break;
+   
+   default:
+        printf("Invalid axis\n");
+        return STATUS_ERROR;
+    break;
+   }
+
+    // Combine the low and high bytes
+    axis_data = (uint16_t)high_byte << 8 | low_byte;
+
+    printf("Data for axis  %d: %d\n", axis, axis_data);
 
 }
